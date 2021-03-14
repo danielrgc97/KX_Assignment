@@ -23,7 +23,7 @@ class MyClass(object):
         self.toRemove = []
         self.waysNumber = 0
 
-    # Primary functions
+    # Functions
     def graphWaysConstruction(self):
         for i in range(0,self.first_line[0]):
             for j in range(0,self.first_line[0]):
@@ -45,8 +45,6 @@ class MyClass(object):
         self.flagRB = False
         for x in self.blues_line:
             self.markLinkRecursive(self.findColor(x))
-
-    # Secondary functions
     def findColor(self,value):
         position = np.where(self.links[:,0] == value)[0]
         if len(position) > 0 : 
@@ -74,7 +72,6 @@ class MyClass(object):
     def findVertices(self):
         for i in range(0,self.first_line[0]):
             if np.all(self.link_states[i] == 1):
-                print(self.links,self.links.shape[0])
 
                 link1 = self.position(self.link_ways[i,0])[0]
                 link2 = self.position(self.link_ways[i,1])[0]
@@ -82,16 +79,43 @@ class MyClass(object):
                 link4 = self.position(self.link_ways[i,3])[0]
 
                 if np.any(self.link_states[int(link1)] == 0) and np.any(self.link_states[int(link2)] == 0):
-                    self.toRemove.append(i+0.1)
-                    self.waysNumber += 1
-                if np.any(self.link_states[int(link3)] == 0) and np.any(self.link_states[int(link4)] == 0):
                     self.toRemove.append(i+0.2)
                     self.waysNumber += 1
-        
-        print(self.toRemove)
+                if np.any(self.link_states[int(link3)] == 0) and np.any(self.link_states[int(link4)] == 0):
+                    self.toRemove.append(i+0.1)
+                    self.waysNumber += 1
 
         return self.waysNumber
-    # def findColors(self,value):
+    def findColorsRecursive(self,value):
+        rowcol = self.position(value)
+        if rowcol[1] == 0:
+            if self.link_ways[int(rowcol[0]),2] != -1: self.findColorsRecursive(self.link_ways[int(rowcol[0]),2])
+            if self.link_ways[int(rowcol[0]),3] != -1: self.findColorsRecursive(self.link_ways[int(rowcol[0]),3])
+            if self.link_ways[int(rowcol[0]),2] == -1 and self.link_ways[int(rowcol[0]),3] == -1:
+                self.deleteColor(self.links[int(rowcol[0]),1])
+                print("color found",self.links[int(rowcol[0]),1])
+        else:
+            if self.link_ways[int(rowcol[0]),0] != -1: self.findColorsRecursive(self.link_ways[int(rowcol[0]),0])
+            if self.link_ways[int(rowcol[0]),1] != -1: self.findColorsRecursive(self.link_ways[int(rowcol[0]),1])
+            if self.link_ways[int(rowcol[0]),0] == -1 and self.link_ways[int(rowcol[0]),1] == -1:
+                 self.deleteColor(self.links[int(rowcol[0]),0])
+                 print("color found",self.links[int(rowcol[0]),0])
+    def deleteColor(self,edge):
+        position = np.where(self.reds_line == edge)[0]
+        if len(position) > 0 :
+            self.reds_line = np.delete(self.reds_line,position)
+
+        position = np.where(self.blues_line == edge)[0]
+        if len(position) > 0 :
+            self.blues_line = np.delete(self.blues_line,position)
+    def deleteColors(self):
+        # print(self.links)
+        for x in self.toRemove:
+            self.findColorsRecursive(x)
+        self.toRemove.sort(reverse=True)
+        # for x in self.toRemove:
+        #     self.links = np.delete(self.links,int(self.toRemove[3]//1),1)
+        print(self.toRemove)
 
         
 
@@ -100,6 +124,7 @@ a = MyClass()
 a.graphWaysConstruction()
 a.linkStatesCalculation()
 a.findVertices()
+a.deleteColors()
 
 
 
