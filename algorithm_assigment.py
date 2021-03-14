@@ -5,7 +5,7 @@ class MyClass(object):
     def __init__(self):
         # Extracting values from the file
         lines = []
-        f = open("./data_cases/case_01.in", "r")
+        f = open("./data_cases/case_03.in", "r")
         lines = f.readlines()
         self.first_line = [int(i) for i in lines[0].split(" ")]
         self.links = np.zeros([self.first_line[0],2])
@@ -39,7 +39,7 @@ class MyClass(object):
 
         for x in self.reds_line:
             self.markLink(self.findColor(x))
-            self.flagRB
+        self.flagRB = False
         for x in self.blues_line:
             self.markLink(self.findColor(x))
         
@@ -64,14 +64,6 @@ class MyClass(object):
     def markLink(self,value):
         rowcol = self.position(value)
 
-        # if self.flagInit == False and ((rowcol[1] == 0 and self.link_ways[int(rowcol[0]),0] == -1 and self.link_ways[int(rowcol[0]),1] == -1)
-        # or (rowcol[1] == 1 and self.link_ways[int(rowcol[0]),2] == -1 and self.link_ways[int(rowcol[0]),3] == -1)):
-        #     print("End")
-        # else:
-
-        
-        flagInit = False
-
         direction = rowcol[1]
         if self.flagRB == False: direction += 2
         # print(int(rowcol[0]),int(direction))
@@ -86,10 +78,6 @@ class MyClass(object):
                 if self.link_ways[int(rowcol[0]),1] != -1: self.markLink(self.link_ways[int(rowcol[0]),1])
         else:
             print("it's already marked")
-
-        print(self.links)
-        print(self.link_ways)
-        print(self.link_states)
             
         
 
