@@ -5,7 +5,7 @@ class MyClass(object):
     def __init__(self):
         # Extracting values from the file
         lines = []
-        f = open("./data_cases/case_03.in", "r")
+        f = open("./data_cases/case_04.in", "r")
         lines = f.readlines()
         self.first_line = [int(i) for i in lines[0].split(" ")]
         self.links = np.zeros([self.first_line[0],2])
@@ -21,7 +21,7 @@ class MyClass(object):
         self.link_states = np.zeros([self.first_line[0],4])
         self.flagRB = True
 
-    # Main functions
+    # Primary functions
     def graphWaysConstruction(self):
         for i in range(0,self.first_line[0]):
             for j in range(0,self.first_line[0]):
@@ -37,16 +37,12 @@ class MyClass(object):
                         elif self.link_ways[i,3] == -1 : self.link_ways[i,3] = j + x
     def linkStatesCalculation(self):
 
+        self.flagRB = True
         for x in self.reds_line:
             self.markLink(self.findColor(x))
         self.flagRB = False
         for x in self.blues_line:
             self.markLink(self.findColor(x))
-        
-
-        print(self.links)
-        print(self.link_ways)
-        print(self.link_states)
 
     # Secondary functions
     def findColor(self,value):
@@ -63,28 +59,58 @@ class MyClass(object):
         return [row,col]
     def markLink(self,value):
         rowcol = self.position(value)
-
         direction = rowcol[1]
         if self.flagRB == False: direction += 2
-        # print(int(rowcol[0]),int(direction))
         if self.link_states[int(rowcol[0]),int(direction)] == 0:
             self.link_states[int(rowcol[0]),int(direction)] = 1
-            print("Marked")
             if rowcol[1] == 0:
                 if self.link_ways[int(rowcol[0]),2] != -1: self.markLink(self.link_ways[int(rowcol[0]),2])
                 if self.link_ways[int(rowcol[0]),3] != -1: self.markLink(self.link_ways[int(rowcol[0]),3])
             else:
                 if self.link_ways[int(rowcol[0]),0] != -1: self.markLink(self.link_ways[int(rowcol[0]),0])
                 if self.link_ways[int(rowcol[0]),1] != -1: self.markLink(self.link_ways[int(rowcol[0]),1])
+    def calcNumOfWays(self):
+        ways = 0
+        for i in range(0,self.first_line[0]):
+            if np.all(self.link_states[i] == 1):
+
+                link1 = self.position(self.link_ways[i,0])[0]
+                link2 = self.position(self.link_ways[i,1])[0]
+                link3 = self.position(self.link_ways[i,2])[0]
+                link4 = self.position(self.link_ways[i,3])[0]
+
+                if np.any(self.link_states[int(link1)] == 0) and np.any(self.link_states[int(link2)] == 0):
+                    self.removeLinkRecursive(i + 0.1)
+                    ways += 1
+                if np.any(self.link_states[int(link3)] == 0) and  np.any(self.link_states[int(link4)] == 0):
+                    self.removeLinkRecursive(i + 0.2)
+                    ways += 1
+        
+        if ways == 0: ways = 1
+        return ways
+    def removeLinkRecursive(self,value):
+        rowcol = self.position(value)
+
+        self.links = np.delete(self.links, int(rowcol[0]), 0)
+        
+        if rowcol[1] == 0:
+            if self.link_ways[int(rowcol[0]),0] != -1: self.removeLinkRecursive(self.link_ways[int(rowcol[0]),0])
+            if self.link_ways[int(rowcol[0]),1] != -1: self.removeLinkRecursive(self.link_ways[int(rowcol[0]),1])
         else:
-            print("it's already marked")
-            
+            if self.link_ways[int(rowcol[0]),2] != -1: self.removeLinkRecursive(self.link_ways[int(rowcol[0]),2])
+            if self.link_ways[int(rowcol[0]),3] != -1: self.removeLinkRecursive(self.link_ways[int(rowcol[0]),3])
+
+        print(self.links.shape[0])
+
+
+
         
 
 
 a = MyClass()
 a.graphWaysConstruction()
 a.linkStatesCalculation()
+print(a.calcNumOfWays())
 
 
 
