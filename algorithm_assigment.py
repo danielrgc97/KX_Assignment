@@ -20,7 +20,6 @@ class MyClass(object):
         self.link_ways = (np.zeros([self.first_line[0],4]) - 1)
         self.link_states = np.zeros([self.first_line[0],4])
         self.flagRB = True
-        self.flagInit = True
 
     # Main functions
     def graphWaysConstruction(self):
@@ -37,7 +36,13 @@ class MyClass(object):
                         if self.link_ways[i,2] == -1 : self.link_ways[i,2] = j + x
                         elif self.link_ways[i,3] == -1 : self.link_ways[i,3] = j + x
     def linkStatesCalculation(self):
-        print(self.markLink(self.findColor(self.reds_line[0])))
+
+        for x in self.reds_line:
+            self.markLink(self.findColor(x))
+            self.flagRB
+        for x in self.blues_line:
+            self.markLink(self.findColor(x))
+        
 
         print(self.links)
         print(self.link_ways)
@@ -52,31 +57,39 @@ class MyClass(object):
             position = np.where(self.links[:,1] == value)[0]
             return np.ndarray.item(position + 0.2)
     def position(self,value):
-        value -= 0.1
+        value = round(value - 0.1, 1)
         row = value // 1
         col =  round(value % 1, 2) * 10
         return [row,col]
     def markLink(self,value):
         rowcol = self.position(value)
 
-        if self.flagInit == False and ((rowcol[1] == 0 and self.link_ways[int(rowcol[0]),0] == -1 and self.link_ways[int(rowcol[0]),1] == -1)
-        or (rowcol[1] == 1 and self.link_ways[int(rowcol[0]),2] == -1 and self.link_ways[int(rowcol[0]),3] == -1)):
-            print("End")
-        else:
-            print("Marked")
-            flagInit = False
+        # if self.flagInit == False and ((rowcol[1] == 0 and self.link_ways[int(rowcol[0]),0] == -1 and self.link_ways[int(rowcol[0]),1] == -1)
+        # or (rowcol[1] == 1 and self.link_ways[int(rowcol[0]),2] == -1 and self.link_ways[int(rowcol[0]),3] == -1)):
+        #     print("End")
+        # else:
 
-            direction = rowcol[1]
-            if self.flagRB == False: direction += 2 
-            print(int(rowcol[0]),int(direction))
+        
+        flagInit = False
+
+        direction = rowcol[1]
+        if self.flagRB == False: direction += 2
+        # print(int(rowcol[0]),int(direction))
+        if self.link_states[int(rowcol[0]),int(direction)] == 0:
             self.link_states[int(rowcol[0]),int(direction)] = 1
-            
+            print("Marked")
             if rowcol[1] == 0:
                 if self.link_ways[int(rowcol[0]),2] != -1: self.markLink(self.link_ways[int(rowcol[0]),2])
                 if self.link_ways[int(rowcol[0]),3] != -1: self.markLink(self.link_ways[int(rowcol[0]),3])
             else:
                 if self.link_ways[int(rowcol[0]),0] != -1: self.markLink(self.link_ways[int(rowcol[0]),0])
                 if self.link_ways[int(rowcol[0]),1] != -1: self.markLink(self.link_ways[int(rowcol[0]),1])
+        else:
+            print("it's already marked")
+
+        print(self.links)
+        print(self.link_ways)
+        print(self.link_states)
             
         
 
