@@ -9,6 +9,8 @@ To solve the problem, the program propagates the information of the colors of th
 With these arrows you can find most of the paths but not all of them. To find them all, it is necessary to cut the graph and perform more iterations until no more paths are found, as shown in the image.
 
 ![](img.jpg =250x)
+![alt text](img.jpg)
+![alt text](img.jpg =250x)
 
 ## Comand:
     python3 algorithm_assigment.py ./relative_path_to_in_file
