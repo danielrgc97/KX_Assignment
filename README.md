@@ -2,7 +2,7 @@
 The python file "algorithm_assigment.py" is where you can find the Algorithmic Task
 
 ## Task Description
-You can find the description of the task in [this pdf](./[link to Google!](./task_description/KX_Assignment.pdf))
+You can find the description of the task in [this pdf](task_description/KX_Assignment.pdf)
 
 ## Solution
 To solve the problem, the program propagates the information of the colors of the graph, in such a way that each link knows if in one direction it can find blue or red edges. In the image below the arrows represents the direction in which the links can find both a blue and a red color.
